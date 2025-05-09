@@ -26,6 +26,16 @@ def get_puuid_by_riot_id(game_name: str, tag_line: str):
         raise HTTPException(status_code=response.status_code, detail=response.json())
     return response.json()
 
+@app.get("/ranked/by-summoner/{summoner_id}")
+def get_ranked_data(summoner_id: str):
+    url = f"https://euw1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner_id}"
+    headers = {"X-Riot-Token": RIOT_API_KEY.strip()}
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+    return response.json()
+
+
 @app.get("/summoner/by-puuid/{puuid}")
 def get_summoner_by_puuid(puuid: str):
     url = f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}"
