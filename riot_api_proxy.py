@@ -1,5 +1,3 @@
-# riot_api_proxy.py
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
@@ -18,19 +16,21 @@ app.add_middleware(
 RIOT_API_KEY = os.getenv("RIOT_API_KEY")
 if not RIOT_API_KEY:
     raise RuntimeError("RIOT_API_KEY is not set!")
-print("RIOT_API_KEY =", RIOT_API_KEY)
 
-@app.get("/summoner/{summoner_name}")
-def get_summoner_data(summoner_name: str):
-    url = f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoner_name}"
-    headers = {"X-Riot-Token": RIOT_API_KEY}
+@app.get("/riotid/{game_name}/{tag_line}")
+def get_puuid_by_riot_id(game_name: str, tag_line: str):
+    url = f"https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{game_name}/{tag_line}"
+    headers = {"X-Riot-Token": RIOT_API_KEY.strip()}
     response = requests.get(url, headers=headers)
-
-    print(">> Request to:", url)
-    print(">> Status code:", response.status_code)
-    print(">> Response text:", response.text)
-
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.json())
+    return response.json()
 
+@app.get("/summoner/by-puuid/{puuid}")
+def get_summoner_by_puuid(puuid: str):
+    url = f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}"
+    headers = {"X-Riot-Token": RIOT_API_KEY.strip()}
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
     return response.json()
