@@ -18,6 +18,7 @@ app.add_middleware(
 RIOT_API_KEY = os.getenv("RIOT_API_KEY")
 if not RIOT_API_KEY:
     raise RuntimeError("RIOT_API_KEY is not set!")
+print("RIOT_API_KEY =", RIOT_API_KEY)
 
 @app.get("/summoner/{summoner_name}")
 def get_summoner_data(summoner_name: str):
