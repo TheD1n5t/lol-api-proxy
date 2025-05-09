@@ -44,3 +44,32 @@ def get_summoner_by_puuid(puuid: str):
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.json())
     return response.json()
+
+@app.get("/matches/by-puuid/{puuid}")
+def get_match_ids(puuid: str, count: int = 5):
+    url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?count={count}"
+    headers = {"X-Riot-Token": RIOT_API_KEY.strip()}
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+    return response.json()
+
+@app.get("/match/{match_id}")
+def get_match_details(match_id: str):
+    url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
+    headers = {"X-Riot-Token": RIOT_API_KEY.strip()}
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+    return response.json()
+
+@app.get("/champs/by-puuid/{puuid}")
+def get_champion_mastery(puuid: str):
+    url = f"https://euw1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/{puuid}"
+    headers = {"X-Riot-Token": RIOT_API_KEY.strip()}
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.json())
+    return response.json()
+
+
