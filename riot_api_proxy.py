@@ -1,3 +1,5 @@
+# riot_api_proxy.py
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
@@ -5,7 +7,6 @@ import os
 
 app = FastAPI()
 
-# CORS erlauben
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,7 +23,6 @@ if not RIOT_API_KEY:
 def get_summoner_data(summoner_name: str):
     url = f"https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoner_name}"
     headers = {"X-Riot-Token": RIOT_API_KEY}
-
     response = requests.get(url, headers=headers)
 
     print(">> Request to:", url)
