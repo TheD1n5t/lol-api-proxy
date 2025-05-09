@@ -1,19 +1,22 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
 
 app = FastAPI()
-# Erlaube CORS für dein GitHub Pages Frontend
+
+# CORS erlauben
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Du kannst das später einschränken
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-RIOT_API_KEY = os.getenv("RIOT_API_KEY")  # Sicher aus Umgebungsvariablen
+RIOT_API_KEY = os.getenv("RIOT_API_KEY")
+if not RIOT_API_KEY:
+    raise RuntimeError("RIOT_API_KEY is not set!")
 
 @app.get("/summoner/{summoner_name}")
 def get_summoner_data(summoner_name: str):
